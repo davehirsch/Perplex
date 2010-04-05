@@ -1,0 +1,195 @@
+;----------------------------------------------------------------------------
+;
+;    MODULE NAME:   ME.MMH
+;
+;        $Author:   USER "Dennis"  $
+;      $Revision:   1.9  $
+;          $Date:   27 Sep 2007 17:38:34  $
+;       $Logfile:   C:/DBAREIS/Projects.PVCS/Win32/MakeMsi/ME.mmh.pvcs  $
+;
+; Very simplistic example of a MAKEMSI customisation/branding file, see
+; "DENNIS.MMH" for a more complex variation (please don't use it though...).
+;----------------------------------------------------------------------------
+
+
+
+;----------------------------------------------------------------------------
+;--- Set up some options specific to my requirements ------------------------
+;----------------------------------------------------------------------------
+#define? DEPT_ARP_URL_PUBLISHER           http://www.perplex.ethz.ch/
+#define? DEPT_ARP_URL_TECHNICAL_SUPPORT   http://www.perplex.ethz.ch/perplex_documentation.html
+#define? DEPT_NAME                        Dave Hirsch
+#define? DEPT_ADDRESS                     Western WA Univ.
+#define? AUTHOR								Jamie Connolly
+#define? AUTHOR_ADDRESS						ETH Zurich
+#define? COMPANY_CONTACT_NAME             <$DEPT_NAME>
+#define? COMPANY_CONTACT_NAME_PHONE                ;;No phone
+#define? COMPANY_SUMMARY_SCHEMA           110      ;;Minimum v1.1 Installer
+
+#define? COMPANY_PRODUCT_ICON            perplex.ico          ;;Add-Remove (control panel) icon
+#define? UISAMPLE_DIALOG_FILE_dlgbmp     LeftSide-Perplex.bmp   ;;My replacement graphic for the left hand side (vertical) bitmap
+#define? UISAMPLE_LEFTSIDE_TEXT                                ;;Disable "left side text"
+;#define? UISAMPLE_BITMAP_WHITE_BANNER    PerplexBanner.bmp     ;;Use "white.bmp" if you just want it plain
+#define? UISAMPLE_BITMAP_BANNER_GRAPHIC  PerplexIconSmFlat.bmp          ;;The graphic on the right of the "UISAMPLE_BITMAP_WHITE_BANNER"
+
+
+;----------------------------------------------------------------------------
+;--- Override/set some standard defaults ------------------------------------
+;----------------------------------------------------------------------------
+#define? DBG_ALL                                   Y         ;;Add MAKEMSI debugging to "console file"
+#define? DBG_SAY_LOCATION                           call Say2Logs <$DBG_INDENT> || '  ' || time() || ' '  ;;Adding time makes it a bit slower but useful for debugging slow builds...
+#define? COMMONFRAMEWORK_ZIP_SOURCE_FOR_BACKUP     N         ;;No "insurance" until I bother to install "info zip"...
+#define? DEFAULT_SERVICE_CONTROL_UNINSTALL_EVENTS            ;;I think this option is safer than the MAKEMSI default
+#define? DEFAULT_SERVICE_CONTROL_INSTALL_EVENTS              ;;I think this option is better
+#define? DEFAULT_FILE_WANT_FILEHASH                Y         ;;My box can generate MD5 hashes!
+#define? COMPANY_PREPROCESS_LICENCE_FILE           Y         ;;Default is to preprocess licence files
+#define? MAKEMSI_HTML_EXTENSION                    hta       ;;Default extension (HTML Application - gets around WINXP SP2 issue)
+#define? UISAMPLE_LEFTSIDE_TEXT_FONT_COLOR         &H7F0000  ;;Medium Blue in BGR (believe it or not...)
+#(
+    #define? UISAMPLE_LEFTSIDE_TEXT 
+#)
+#(
+    #define? @VALIDATE_TEXT_FOR_MISSINGDATA                   ;;Example only as now duplicates exact text as new default value
+    This column is not mentioned in the _Validation table.
+    Either add the validation data or use the "@validate" parameter
+    on the "row" command (or alter its default).
+#)
+
+
+
+;----------------------------------------------------------------------------
+;--- Include MAKEMSI support ------------------------------------------------
+;----------------------------------------------------------------------------
+#include "DEPT.MMH"
+
+
+#NextId
+#define? OPTION_DIRFILES_FIRST_USE_SETS_ROOT_FEATURE_DIRECTORY  Y         ;;Y/N
+#define? OPTION_DIRFILES_FIRST_DIRKEY                           DIRFILES
+#define? OPTION_DIRFILES_OTHER_DIRKEYS                          <$OPTION_DIRFILES_FIRST_DIRKEY>_{$Cnt}
+#define? OPTION_DIRFILES_DEFAULT_Options4Files
+#RexxVar @@DirFilesCnt = 0
+#( ''
+   #define DirFiles
+
+   ;--- Some Parameter Validations ------------------------------------------
+   {$!KEYWORDS}                 ;;Don't accept/use keyword parameters
+   #( ''
+       ;--- Check passed parameter names against this list ------------------
+       {$!:#1,              ;;List of one or more file masks (normally must be at least one file matching mask)
+           Dir,             ;;Destination dir (first one usually configurable via root feature). Can also be a Directory key such as "INSTALLDIR"
+           Options4Files    ;;A mechanism to supply "FILES" command options
+       }
+   #)
+
+   ;--- Create the MSI directory key if not seen before ---------------------
+   #DefineRexx ''
+    @@Dir    = '{$Dir}';
+    if  pos(@@Dir, '\') = 0 then;
+        @@DirKey = @@Dir;
+    else
+        @@DirKey = DataGet(translate('{$Dir}'))    ;;Returns '' if not seen
+   #DefineRexx
+   #if   [@@DirKey = '']
+       ;--- Have not seen before so what do we wish to call this directory? ---
+       #RexxVar @@DirFilesCnt + 1
+       #if [@@DirFilesCnt = 1]
+            #RexxVar @@DirKey = "<$OPTION_DIRFILES_FIRST_DIRKEY>"
+       #elseif
+            #RexxVar @@DirKey = "<$OPTION_DIRFILES_OTHER_DIRKEYS Cnt=^<??@@DirFilesCnt>^>"
+       #endif
+
+       ;--- Save this info away ---------------------------------------------
+       #DefineRexx ''
+            call DataSave translate('{$Dir}'),, @@DirKey
+       #DefineRexx
+
+       ;--- Create the directory --------------------------------------------
+       #RexxVar @@FeatureDir = 'N'
+       #if [@@DirFilesCnt = 1]
+           #if   ['<$OPTION_DIRFILES_FIRST_USE_SETS_ROOT_FEATURE_DIRECTORY $$UPPER>' = 'Y']
+                 #RexxVar @@FeatureDir = 'Y'
+           #endif
+       #endif
+       #if   [@@FeatureDir = 'N']
+             <$DirectoryTree Key="<??@@DirKey>" Dir="{$Dir}">
+       #elseif
+             <$DirectoryTree Key="<??@@DirKey>" Dir="{$Dir}" CHANGE='\'>
+       #endif
+   #endif
+
+   ;--- Add the Files to the MSI --------------------------------------------
+   #if  ['{$Options4Files=^^ $$IsPassed}' = 'Y']
+        <$Files "{$#1}" DestDir="<??@@DirKey>" {$Options4Files}>
+   #elseif
+       ;--- Bit trickier ----------------------------------------------------
+       #DefineRexx ''
+            @@Options4Files = MacroGet('OPTION_DIRFILES_DEFAULT_Options4Files');
+            @@FilesCmd      = '<' || '$Files "{$#1}" DestDir="' || @@DirKey || '" ' || @@Options4Files || '>'
+        #DefineRexx
+        <??@@FilesCmd><?RestartLine>
+   #endif
+#)
+
+
+;--- If we find the file "*.rtf" then we create a dialog for it ---
+#DefineRexx ''
+   ;--- See if a release notes file exists ----------------------------------
+   @@PerplexNotesFile = "<$ProdInfo.ProductName>.rtf";
+   @@PerplexNotesFull = FileQueryExists(@@PerplexNotesFile);
+   if   @@PerplexNotesFull = '' then
+        ;--- No Perplex notes file! -----------------------------------------
+        @@Text = ''
+   else
+   do
+        ;--- Found the file, read the contents ------------------------------
+        call FileClose @@PerplexNotesFull, 'N';
+        @@Text = charin(@@PerplexNotesFull,1, 999999);
+        call FileClose @@PerplexNotesFull;
+        @@PerplexNotesDate = FileQueryDateTime(@@PerplexNotesFull);
+
+        ;--- Create a VB string (without the outer quotes) ------------------
+        @@Text = ReplaceString(@@Text, '"',   '""');
+        @@Text = ReplaceString(@@Text, '00'x, ' ');   ;;God knows why the trailing null exists...
+        @@Text = ReplaceString(@@Text, '0D'x, '" & vbCR & "');
+        @@Text = ReplaceString(@@Text, '0A'x, '" & vbLF & "');
+   end;
+#DefineRexx
+#if [@@Text = ""]
+    #info "No Perplex notes (<??@@PerplexNotesFile>)"
+#elseif
+    ;--- We do have Perplex notes -------------------------------------------
+    #info "Creating Perplex notes dialog (<??@@PerplexNotesFile>)"
+
+    ;--- Work out where to insert the dialog --------------------------------
+    #ifdef REMOVED_LicenseAgreementDlg          ;;Only exists if the dialog has been removed...
+           #define InsertAfter WelcomeDlg
+    #else
+           #define InsertAfter LicenseAgreementDlg
+    #endif
+
+    ;--- Create a "empty dialog" --------------------------------------------
+    #define?  PerplexNOTES_TITLE        Perplex Notes
+    #define?  PerplexNOTES_DESCRIPTION  Please read these notes (dated <??@@PerplexNotesDate>):
+    <$Dialog Dialog="PerplexNotes" "<$PerplexNOTES_TITLE>" Description="<$PerplexNOTES_DESCRIPTION>" INSERT="<$InsertAfter>">
+        ;--- No controls ----------------------------------------------------
+    <$/Dialog>
+
+    ;--- Add a control to the "empty dialog" created above ------------------
+    <$Table "Control">
+       #(
+           <$Row
+                    Dialog_="PerplexNotes"
+                    Control="PerplexNotes"
+                       Type="ScrollableText"
+                          X="20"
+                          Y="60"
+                      Width="330"
+                     Height="160"
+                 Attributes="7"
+                      *Text=~"<??@@Text>"~
+           >
+       #)
+    <$/Table>
+#endif
+

@@ -1,0 +1,30 @@
+EASY Installation
+=================
+If you got here, you probably ran the Installer, and probably installed the
+libraries.  Good job.
+
+
+HARD Installation
+=================
+Alternately, you can install Cairo, a C-compiler and GFortran yourself at these links:
+
+CAIRO:  Easiest way is to follow the instructions at Cairographics
+(http://cairographics.org/download/) and install the whole GTK package, which 
+installs Cairo
+and all its dependent libraries.
+
+GFORTRAN: You can install from the GCC site (http://gcc.gnu.org/fortran/) or find a 
+binary there.
+
+
+===========================================================
+|                                                         |
+|  REGARDLESS, you should go now to the Perple_X website  |
+|  (http://www.perplex.ethz.ch) and download the current  |
+|  version of the data files; they change often.The ones  |
+|  here are likely out-of-date.                           |
+|                                                         |
+===========================================================
+
+
+-Dave Hirsch, Western WA University, 3/2010

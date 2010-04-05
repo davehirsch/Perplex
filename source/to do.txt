@@ -1,0 +1,5 @@
+default to hp04ver.dat?
+
+install single copy of binaries and set PATH variable (Mac/PC)
+
+

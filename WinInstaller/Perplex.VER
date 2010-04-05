@@ -1,0 +1,37 @@
+;----------------------------------------------------------------------------
+;
+;    MODULE NAME:   Perplex.VER
+;
+;        $Author:   USER "Dave Hirsch"  $
+;      $Revision:   1.0  $
+;          $Date:   26 Mar 2010 08:25:32  $
+;
+;    DESCRIPTION:   Simple sample/test MSI.
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+; ProductName = Perple_X
+; DESCRIPTION = Installer for Perple_X and associated DLLs
+; Installed   = WINDOWS_ALL
+; Guid.UpgradeCode = {4A6A44C5-5D16-4104-95D9-2B60FE39F7FE}
+; MsiName     = Perple_X
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+;############################################################################
+VERSION : 6.0.2
+DATE    : 31 Mar 2010
+CHANGES : Adds Perplex folder to PATH and no longer makes copies of programs.  hp04ver.dat is default for build.
+
+
+;############################################################################
+VERSION : 6.0.1
+DATE    : 28 Mar 2010
+CHANGES : Incorporates fixes to draw line labels correctly in plots with aspect ratios <> 1, as well as other bug fixes and improvements.
+
+
+
+;############################################################################
+VERSION : 6.0.0
+DATE    : 26 Mar 2010
+CHANGES : First attempt at a Perplex Installer.  Version number 6 is an arbitrary starting point to reflect the work that Jamie has done over the years.
+
