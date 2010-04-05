@@ -1,0 +1,7 @@
+README for Perplex project
+==========================
+
+Perplex (aka Perple_X, PerpleX) is a geological thermodynamics program, written by Jamie Connolly at ETH Zurich, with some recent additions by Dave Hirsch at Western Washington University.
+
+Most of Perplex is written in Fortran, with some recent bits written in C.
+
