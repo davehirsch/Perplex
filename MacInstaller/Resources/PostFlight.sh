@@ -27,7 +27,7 @@ then
 	#append text to .bash_profile file - this will create the .bash_profile file if necessary
 	echo "" >> $HOME/.bash_profile
 	echo "###### Adding  perplex libraries to DYLD path " >> $HOME/.bash_profile
-	echo "export \$DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:/usr/local/lib/perplex" >> $HOME/.bash_profile
+	echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:/usr/local/lib/perplex" >> $HOME/.bash_profile
 	echo "" >> $HOME/.bash_profile
 fi
 

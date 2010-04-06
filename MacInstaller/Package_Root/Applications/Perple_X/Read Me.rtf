@@ -4,35 +4,30 @@
 \margl1440\margr1440\vieww14920\viewh11480\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 This version of Perple_X has been compiled as Universal binaries, which will run on both PowerPC and Intel processors (32- or 64-bit).  The Intel parts have been optimized for the Core 2 chip, but should run on any chip.\
+\f0\fs24 \cf0 This version of Perple_X has been compiled as Universal binaries, which will run on both PowerPC and Intel processors (32- or 64-bit).  The Intel parts have been optimized for the Intel Core2 chip, but should run on any chip.\
 \
-This version of Perple_X will save PostScript, PDF, or SVG files.  That choice is specified in the perplex_plot_options file.\
+This version of Perple_X includes new versions of the graphical output programs (e.g., pssect, psvdraw) that will save (legal) PostScript, PDF, or SVG files.  That choice is specified in the perplex_plot_options file.  These programs are distinguished from their older versions by the addition of "_new" to their names.\
 \
 
 \i\b The installer does the following
 \i0\b0 :\
 	1) Install a set of libraries in /usr/local/lib/perplex that are required for the new functions of Perplex to run.\
-	2) Install a Perple_X folder in /Applications.  This contains the binaries.\
-	3) Append text to a (normally invisible) file in your home directory called ".bash_profile" that appends /Applications/Perple_X to your PATH variable.  This enables you to run the Perplex programs from the command line no matter where your current directory is located.\
-\
-
-\i\b If you want to move the Perple_X folder
-\i0\b0  someplace other that /Applications, you need to edit the ~/.bash_profile file to set the PATH variable to include the new location of the binaries.\
+	2) Install a Perple_X folder in a location of your choosing (default is /Applications).  This contains the binaries.\
+	3) Append text to a (normally invisible) file in your home directory called ".bash_profile" that appends /Applications/Perple_X (or whatever the install location is) to your PATH variable.  This enables you to run the Perplex programs from the command line no matter where your current directory is located.\
 \
 
 \i\b The best way to run Perplex
-\i0\b0  is to double-click the "Make Working Copy" applescript in /Applications/Perple_X/.  This will ask you to locate a folder to convert into a working Perplex folder, copying datafiles and option files into that folder, opening it in the Finder, and opening a Terminal window, moving to that folder, and running build.\
+\i0\b0  is to double-click the "Make Perplex Folder" applescript in /Applications/Perple_X/ (or whatever the install location is).  This will ask you to locate or create a folder to convert into a working Perplex folder, copying datafiles and option files into that folder, opening it in the Finder, and opening a Terminal window, moving to that folder, and running build.\
 \
 
 \i\b To remove PerpleX
-\i0\b0 , type the following in a command window, from an administrator-enabled account:\
+\i0\b0 , first move the installed Perple_X folder to the Trash, then type the following in a command window, from an administrator-enabled account:\
 	sudo rm -rf /usr/local/lib/perplex\
-	sudo rm -rf /Applications/Perple_X\
 \
 
 \i\b If you find a bug
 \i0\b0 , please send email to:\
-	Dave Hirsch, Western WA Univ (dhirsch@mac.com)\
+	Dave Hirsch, Western WA University (dhirsch@mac.com)\
 \
 -Dave Hirsch,\
 Western WA Univ.}
