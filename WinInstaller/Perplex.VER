@@ -16,12 +16,15 @@
 ; MsiName     = Perple_X
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+;############################################################################
+VERSION : 6.1
+DATE    : 6 Apr 2010
+CHANGES : Optimizes performance to equal Intel compiler version. Reverts default build choice to hp02ver.dat. Includes old and new versions of binaries.
 
 ;############################################################################
 VERSION : 6.0.2
 DATE    : 31 Mar 2010
 CHANGES : Adds Perplex folder to PATH and no longer makes copies of programs.  hp04ver.dat is default for build.
-
 
 ;############################################################################
 VERSION : 6.0.1

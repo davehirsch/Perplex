@@ -1,5 +1,5 @@
 #
-# makefile for Perple_X 07
+# Windows (MinGW) makefile for Perple_X 07
 #
 # To compile the Perple_X programs with this file first edit the compiler
 # variables so that they are consistent with the fortran and C installation on 
@@ -28,23 +28,29 @@
 #                  COMP77 = the name of the local fortran 77 compatible compiler
 COMP77 = gfortran
 #                  FFLAGS = the desired compile options
-FFLAGS = -v -pedantic -Wunused -O3 -march=i386 -mtune=i386
 
-# DMH added 02 Feb 2010:
+COMPILE_OPTIONS = -v -O3 -ffast-math -funroll-loops --param max-unroll-times=4 -ftree-vectorize -march=i386 -mtune=i386
+
+BASE_FORTRAN_FLAGS = -pedantic -Wunused 	#desired additional compile options for fortran
+export FFLAGS = $(BASE_FORTRAN_FLAGS) $(COMPILE_OPTIONS)
+
 CC = gcc
-CFLAGS = -v -pedantic -Wunused -O3
+BASE_C_FLAGS = -pedantic -Wunused 		#desired additional compile options for C
+export CFLAGS = $(BASE_C_FLAGS) $(COMPILE_OPTIONS)
 CAIRO_INCLUDE = C:\mingw\include\cairo
 CAIRO_LIB = C:\mingw\lib
 
 
-MYOBJ = actcor build cohsrk ctransf frendly hptover htog meemum pscontor pscontor_rel pspts psvdraw pssect pt2curv species vertex werami
+MYOBJ = actcor build cohsrk ctransf frendly hptover htog meemum pscontor pscontor_rel pspts psvdraw pssect pscontor_new pscontor_rel_new pspts_new psvdraw_new pssect_new pt2curv species vertex werami
+
 all:  $(MYOBJ)
+	move "*.exe" "..\WinInstaller\programs"
 
 clean: 
 	del -f *.o *.exe $(MYOBJ)
 
-###################### TARGETS FOR FORTRAN PROGRAMS #########################   
-# 
+###################### TARGETS FOR FORTRAN PROGRAMS #########################
+#
 actcor: actcor.o tlib.o 
 	$(COMP77) $(FFLAGS) $@.o tlib.o -o $@
 
@@ -69,19 +75,35 @@ htog: htog.o
 meemum: meemum.o tlib.o rlib.o flib.o nlib.o clib.o resub.o olib.o
 	$(COMP77) $(FFLAGS) meemum.o tlib.o rlib.o flib.o nlib.o clib.o resub.o olib.o -o $@   
 
-pscontor: pscontor.o pscom.o graphic_output.o tlib.o cont_lib.o 
+pscontor: pscontor.o pscom.o pslib.o tlib.o cont_lib.o
+	$(COMP77) $(FFLAGS) $@.o pscom.o pslib.o tlib.o cont_lib.o -o $@
+
+pscontor_rel: pscontor_rel.o pslib.o pscom.o tlib.o cont_lib.o
+	$(COMP77) $(FFLAGS) $@.o pslib.o pscom.o tlib.o cont_lib.o -o $@
+
+pspts: pspts.o pslib.o tlib.o pscom.o 
+	$(COMP77) $(FFLAGS) $@.o pslib.o tlib.o pscom.o -o $@
+
+psvdraw: psvdraw.o pslib.o tlib.o pscom.o
+	$(COMP77) $(FFLAGS) $@.o pslib.o tlib.o pscom.o -o $@
+
+pssect: pssect.o pslib.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o 
+	$(COMP77) $(FFLAGS) $@.o pslib.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o  -o $@
+
+### NEW VERSIONS ###
+pscontor_new: pscontor_new.o pscom.o graphic_output.o tlib.o cont_lib.o
 	$(COMP77) $(FFLAGS) $@.o pscom.o graphic_output.o tlib.o cont_lib.o -L$(CAIRO_LIB) -lcairo -o $@
 
-pscontor_rel: pscontor_rel.o graphic_output.o pscom.o tlib.o cont_lib.o
+pscontor_rel_new: pscontor_rel_new.o graphic_output.o pscom.o tlib.o cont_lib.o
 	$(COMP77) $(FFLAGS) $@.o graphic_output.o pscom.o tlib.o cont_lib.o -L$(CAIRO_LIB) -lcairo -o $@
 
-pspts: pspts.o graphic_output.o tlib.o pscom.o 
+pspts_new: pspts_new.o graphic_output.o tlib.o pscom.o
 	$(COMP77) $(FFLAGS) $@.o graphic_output.o tlib.o pscom.o -L$(CAIRO_LIB) -lcairo -o $@
 
-psvdraw: psvdraw.o graphic_output.o tlib.o pscom.o
+psvdraw_new: psvdraw_new.o graphic_output.o tlib.o pscom.o
 	$(COMP77) $(FFLAGS) $@.o graphic_output.o tlib.o pscom.o -L$(CAIRO_LIB) -lcairo -o $@
 
-pssect: pssect.o graphic_output.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o 
+pssect_new: pssect_new.o graphic_output.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o
 	$(COMP77) $(FFLAGS) $@.o graphic_output.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o  -L$(CAIRO_LIB) -lcairo -o $@
 
 pt2curv: pt2curv.o
@@ -141,6 +163,21 @@ pscontor.o: pscontor.f
 	$(COMP77) $(FFLAGS) -c pscontor.f
 pscontor_rel.o: pscontor_rel.f
 	$(COMP77) $(FFLAGS) -c pscontor_rel.f
+
+### NEW VERSIONS:
+psvdraw_new.o: psvdraw_new.f
+	$(COMP77) $(FFLAGS) -c psvdraw_new.f -o $@
+pscom_new.o: pscom_new.f
+	$(COMP77) $(FFLAGS) -c pscom_new.f -o $@
+pssect_new.o: pssect_new.f
+	$(COMP77) $(FFLAGS) -c pssect_new.f -o $@
+pspts_new.o: pspts_new.f
+	$(COMP77) $(FFLAGS) -c pspts_new.f -o $@
+pscontor_new.o: pscontor_new.f
+	$(COMP77) $(FFLAGS) -c pscontor_new.f -o $@
+pscontor_rel_new.o: pscontor_rel_new.f
+	$(COMP77) $(FFLAGS) -c pscontor_rel_new.f -o $@
+
 ps_p_contor.o: ps_p_contor.f
 	$(COMP77) $(FFLAGS) -c ps_p_contor.f
 pt2curv.o: pt2curv.f

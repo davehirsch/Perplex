@@ -19,7 +19,7 @@ binary there.
 
 ===========================================================
 |                                                         |
-|  REGARDLESS, you should go now to the Perple_X website  |
+|  You should go now to the Perple_X website              |
 |  (http://www.perplex.ethz.ch) and download the current  |
 |  version of the data files; they change often.The ones  |
 |  here are likely out-of-date.                           |
@@ -27,4 +27,4 @@ binary there.
 ===========================================================
 
 
--Dave Hirsch, Western WA University, 3/2010
+-Dave Hirsch, Western WA University, 4/2010
