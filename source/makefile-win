@@ -91,20 +91,20 @@ pssect: pssect.o pslib.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o
 	$(COMP77) $(FFLAGS) $@.o pslib.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o  -o $@
 
 ### NEW VERSIONS ###
-pscontor_new: pscontor_new.o pscom.o graphic_output.o tlib.o cont_lib.o
-	$(COMP77) $(FFLAGS) $@.o pscom.o graphic_output.o tlib.o cont_lib.o -L$(CAIRO_LIB) -lcairo -o $@
+pscontor_new: pscontor_new.o pscom_new.o graphic_output.o tlib.o cont_lib.o
+	$(COMP77) $(FFLAGS) $@.o pscom_new.o graphic_output.o tlib.o cont_lib.o -L$(CAIRO_LIB) -lcairo -o $@
 
-pscontor_rel_new: pscontor_rel_new.o graphic_output.o pscom.o tlib.o cont_lib.o
-	$(COMP77) $(FFLAGS) $@.o graphic_output.o pscom.o tlib.o cont_lib.o -L$(CAIRO_LIB) -lcairo -o $@
+pscontor_rel_new: pscontor_rel_new.o graphic_output.o pscom_new.o tlib.o cont_lib.o
+	$(COMP77) $(FFLAGS) $@.o graphic_output.o pscom_new.o tlib.o cont_lib.o -L$(CAIRO_LIB) -lcairo -o $@
 
-pspts_new: pspts_new.o graphic_output.o tlib.o pscom.o
-	$(COMP77) $(FFLAGS) $@.o graphic_output.o tlib.o pscom.o -L$(CAIRO_LIB) -lcairo -o $@
+pspts_new: pspts_new.o graphic_output.o tlib.o pscom_new.o
+	$(COMP77) $(FFLAGS) $@.o graphic_output.o tlib.o pscom_new.o -L$(CAIRO_LIB) -lcairo -o $@
 
-psvdraw_new: psvdraw_new.o graphic_output.o tlib.o pscom.o
-	$(COMP77) $(FFLAGS) $@.o graphic_output.o tlib.o pscom.o -L$(CAIRO_LIB) -lcairo -o $@
+psvdraw_new: psvdraw_new.o graphic_output.o tlib.o pscom_new.o
+	$(COMP77) $(FFLAGS) $@.o graphic_output.o tlib.o pscom_new.o -L$(CAIRO_LIB) -lcairo -o $@
 
-pssect_new: pssect_new.o graphic_output.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o
-	$(COMP77) $(FFLAGS) $@.o graphic_output.o pscom.o tlib.o rlib.o flib.o clib.o dlib.o  -L$(CAIRO_LIB) -lcairo -o $@
+pssect_new: pssect_new.o graphic_output.o pscom_new.o tlib.o rlib.o flib.o clib.o dlib.o
+	$(COMP77) $(FFLAGS) $@.o graphic_output.o pscom_new.o tlib.o rlib.o flib.o clib.o dlib.o  -L$(CAIRO_LIB) -lcairo -o $@
 
 pt2curv: pt2curv.o
 	$(COMP77) $(FFLAGS) $@.o -o $@

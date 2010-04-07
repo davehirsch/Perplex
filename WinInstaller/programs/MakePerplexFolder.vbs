@@ -21,7 +21,7 @@ MyFolder = fso.GetParentFolderName(wscript.ScriptFullName)
 'Call CopyIfNeeded("pssect.exe", MyFolder, DestinationFolder)
 Call CopyIfNeeded("perplex_option.dat", MyFolder, DestinationFolder)
 Call CopyIfNeeded("perplex_plot_option.dat", MyFolder, DestinationFolder)
-Call CopyIfNeeded("hp04ver.dat", MyFolder+"\datafiles", DestinationFolder)
+Call CopyIfNeeded("hp02ver.dat", MyFolder+"\datafiles", DestinationFolder)
 Call CopyIfNeeded("newest_format_solut.dat", MyFolder+"\datafiles", DestinationFolder)
 
 If OpenAfterMaking Then

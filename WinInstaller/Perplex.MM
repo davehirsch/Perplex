@@ -21,7 +21,7 @@
 
 <$Feature "MainFiles" Title=^Main Program Files^ Description="The main program files, such as vertex.exe, which are the core of Perplex.">
 	<$Component "MainFiles" Create="Y" Directory_="INSTALLDIR">
-		<$FilesExclude ".\programs\Make Working Copy.vbs" EXLIST="NotThese">   ;;Don't include these!
+		<$FilesExclude ".\programs\MakePerplexFolder.vbs" EXLIST="NotThese">   ;;Don't include these!
 		<$Files ".\programs\*" KeyFile="vertex.exe" EXLIST="NotThese">
 		<$Path   "[INSTALLDIR]">
 	<$/Component>
@@ -32,7 +32,7 @@
 		<$DirectoryTree Key="MY_SHORTCUT_FOLDER" Dir="[ProgramMenuFolder]\PerpleX" MAKE="Y" REMOVE=Y">
 
 		;--- Add the file (make the component's keypath) ------------------------
-		<$File RowKey="MWC.vbs" Source=".\programs\Make Working Copy.vbs" Comment='Simple tool to display environmental version information.' KeyPath="Y">
+		<$File RowKey="MWC.vbs" Source=".\programs\MakePerplexFolder.vbs" Comment='Simple tool to display environmental version information.' KeyPath="Y">
 
 		;--- Create the shortcut (non-advertised) --------------------------------
 	   #(

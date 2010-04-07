@@ -17,7 +17,7 @@
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ;############################################################################
-VERSION : 6.1
+VERSION : 6.1.0
 DATE    : 6 Apr 2010
 CHANGES : Optimizes performance to equal Intel compiler version. Reverts default build choice to hp02ver.dat. Includes old and new versions of binaries.
 
