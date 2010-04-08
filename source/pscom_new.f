@@ -1023,7 +1023,7 @@ c                                 -------------------------------------
      *        4x,'field_fill             ',l1,10x,'[T] F',/,
      *        4x,'field_label            ',l1,10x,'[T] F',/,
      *        4x,'field_label_scale      ',f4.2,7x,'[0.72] (rel)',/,
-     *        4x,'new_font               ',a,/,
+     *        4x,'new_font               ',a,'[Arial]',/,
      *        4x,'grid                   ',l1,10x,'[F] T',/,
      *        4x,'half_ticks             ',l1,10x,'[T] F',/,
      *        4x,'line_width             ',f4.2,7x,'0-99 [1.] (pts)',/,

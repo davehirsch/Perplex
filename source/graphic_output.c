@@ -118,16 +118,28 @@ void psopen_(char *fname, int fnamelen) {
 	 Could use the Perplex routine to do this, but calling into C from
 	 fortran is bad enough. */
 	
-	getOptionForKey("plot_output_type", outputType, 255);
-	get2OptionsForKey("page_size", pageWidthString, pageHeightString, 255);
+	/* Default Values - If these get changed, then need to change the display in
+		pscom_new.f as well */
+	
+	if (!getOptionForKey("plot_output_type", outputType, 255)) {
+		strcpy(outputType, "PDF");
+	}
+	
+	if (get2OptionsForKey("page_size", pageWidthString, pageHeightString, 255)) {
+		DEBUGPRINT(("Found page size strings: (%s, %s)\n", pageWidthString, pageHeightString));
+		sscanf(pageWidthString, "%i", &dmh_pageWidth);
+		sscanf(pageHeightString, "%i", &dmh_pageHeight);
+		DEBUGPRINT(("Found page size values: (%i, %i)\n", dmh_pageWidth, dmh_pageHeight));
+	} else {
+		dmh_pageWidth = 612;
+		dmh_pageHeight = 792;
+	}
 	
 	dmh_fontFace = malloc(255*sizeof(char));
-	getCompleteOptionForKey("new_font", dmh_fontFace, 255);
+	if (!getCompleteOptionForKey("new_font", dmh_fontFace, 255)) {
+		strcpy(dmh_fontFace, "Arial");
+	}
 	
-	DEBUGPRINT(("Found page size strings: (%s, %s)\n", pageWidthString, pageHeightString));
-	sscanf(pageWidthString, "%i", &dmh_pageWidth);
-	sscanf(pageHeightString, "%i", &dmh_pageHeight);
-	DEBUGPRINT(("Found page size values: (%i, %i)\n", dmh_pageWidth, dmh_pageHeight));
 	
 	if (!strcmp(outputType, "SVG") || !strcmp(outputType, "svg")) {
 		strcat(outFileName, ".svg");
@@ -209,62 +221,69 @@ void completeRelativeOperation () {
  the value in the supplied string variable, which should be pre-allocated.
  The value may have spaces in it.
  ==================================================================================*/
-void getCompleteOptionForKey(char *keyword, char *value, int valueSize) {
+char getCompleteOptionForKey(char *keyword, char *value, int valueSize) {
 	char optionFileName[655] = "perplex_plot_option.dat";
 	char *oneLine = malloc(655 * sizeof(char));
 	char currentKeyword[655];
 	char currentValue[655];
 	FILE *optionFile;
-	int foundValue = 0;
+	char foundValue = 0;
 	int argsAssigned;
 	
 	optionFile = fopen(optionFileName, "r");
 	
-	while (!feof(optionFile) && !foundValue) {
- 		oneLine = fgets(oneLine, 655, optionFile);
-		
-		argsAssigned = sscanf(oneLine, "%654[^ 	|] %654[^|]", currentKeyword, currentValue);
- 		
- 		if (!strcmp(currentKeyword, keyword)) {
- 			foundValue = 1;
- 			trim(currentValue);
- 			DEBUGPRINT(("Found %i values: '%s' for keyword '%s'.\n", argsAssigned, currentValue, currentKeyword));
- 			trim(currentValue);
-			strncpy(value, currentValue, valueSize-1);	/* copy only as many characters as will fit in value */
- 		}
+	if (optionFile) {
+		while (!feof(optionFile) && !foundValue) {
+			oneLine = fgets(oneLine, 655, optionFile);
+			
+			argsAssigned = sscanf(oneLine, "%654[^ 	|] %654[^|]", currentKeyword, currentValue);
+			
+			if (!strcmp(currentKeyword, keyword)) {
+				foundValue = 1;
+				trim(currentValue);
+				DEBUGPRINT(("Found %i values: '%s' for keyword '%s'.\n", argsAssigned, currentValue, currentKeyword));
+				trim(currentValue);
+				strncpy(value, currentValue, valueSize-1);	/* copy only as many characters as will fit in value */
+			}
+		}
+		fclose(optionFile);
 	}
-	fclose(optionFile);
 	free(oneLine);
+	return foundValue;
 }
 
 /*==================================================================================
  getOptionForKey - examines the plot options file for the value of a keyword. Returns
  the value in the supplied string variable, which should be pre-allocated.
  ==================================================================================*/
-void getOptionForKey(char *keyword, char *value, int valueSize) {
+char getOptionForKey(char *keyword, char *value, int valueSize) {
 	char optionFileName[655] = "perplex_plot_option.dat";
 	char *oneLine = malloc(655 * sizeof(char));
 	char currentKeyword[655];
 	char currentValue[655];
 	FILE *optionFile;
-	int foundValue = 0;
+	char foundValue = 0;
 	int argsAssigned;
 	
 	optionFile = fopen(optionFileName, "r");
 	
-	while (!feof(optionFile) && !foundValue) {
- 		oneLine = fgets(oneLine, 655, optionFile);
+	if (optionFile) {
 		
-		argsAssigned = sscanf(oneLine, "%654[^ 	|] %654[^ 	|]", currentKeyword, currentValue);
- 		
- 		if (!strcmp(currentKeyword, keyword)) {
- 			foundValue = 1;
- 			DEBUGPRINT(("Found %i values: '%s' for keyword '%s'.\n", argsAssigned, currentValue, currentKeyword));
-			strncpy(value, currentValue, valueSize-1);	/* copy only as many characters as will fit in value */
- 		}
+		while (!feof(optionFile) && !foundValue) {
+			oneLine = fgets(oneLine, 655, optionFile);
+			
+			argsAssigned = sscanf(oneLine, "%654[^ 	|] %654[^ 	|]", currentKeyword, currentValue);
+			
+			if (!strcmp(currentKeyword, keyword)) {
+				foundValue = 1;
+				DEBUGPRINT(("Found %i values: '%s' for keyword '%s'.\n", argsAssigned, currentValue, currentKeyword));
+				strncpy(value, currentValue, valueSize-1);	/* copy only as many characters as will fit in value */
+			}
+		}
+		fclose(optionFile);
 	}
-	fclose(optionFile);
 	free(oneLine);
+	return foundValue;
 }
 
 /*==================================================================================
@@ -272,32 +291,35 @@ void getOptionForKey(char *keyword, char *value, int valueSize) {
  the value in the supplied string variable, which should be pre-allocated.
  (2 parameters)
  ==================================================================================*/
-void get2OptionsForKey(char *keyword, char *value1, char *value2, int valueSize) {
+char get2OptionsForKey(char *keyword, char *value1, char *value2, int valueSize) {
 	char optionFileName[655] = "perplex_plot_option.dat";
 	char *oneLine = malloc(655 * sizeof(char));
 	char currentKeyword[655];
 	char currentValue1[655];
 	char currentValue2[655];
 	FILE *optionFile;
-	int foundValue = 0;
+	char foundValue = 0;
 	int argsAssigned;
 	
 	optionFile = fopen(optionFileName, "r");
 	
-	while (!feof(optionFile) && !foundValue) {
- 		oneLine = fgets(oneLine, 655, optionFile);
-		
-		argsAssigned = sscanf(oneLine, "%654[^ 	|] %654[^ 	|] %654[^ 	|]", currentKeyword, currentValue1, currentValue2);
- 		
- 		if (!strcmp(currentKeyword, keyword)) {
- 			foundValue = 1;
- 			DEBUGPRINT(("Found %i values: '%s', '%s' for keyword '%s'.\n", argsAssigned, currentValue1, currentValue2, currentKeyword));
-			strncpy(value1, currentValue1, valueSize-1);	/* copy only as many characters as will fit in value */
-			strncpy(value2, currentValue2, valueSize-1);	/* copy only as many characters as will fit in value */
- 		}
+	if (optionFile) {
+		while (!feof(optionFile) && !foundValue) {
+			oneLine = fgets(oneLine, 655, optionFile);
+			
+			argsAssigned = sscanf(oneLine, "%654[^ 	|] %654[^ 	|] %654[^ 	|]", currentKeyword, currentValue1, currentValue2);
+			
+			if (!strcmp(currentKeyword, keyword)) {
+				foundValue = 1;
+				DEBUGPRINT(("Found %i values: '%s', '%s' for keyword '%s'.\n", argsAssigned, currentValue1, currentValue2, currentKeyword));
+				strncpy(value1, currentValue1, valueSize-1);	/* copy only as many characters as will fit in value */
+				strncpy(value2, currentValue2, valueSize-1);	/* copy only as many characters as will fit in value */
+			}
+		}
+		fclose(optionFile);
 	}
-	fclose(optionFile);
 	free(oneLine);
+	return foundValue;
 }
 
 
@@ -874,7 +896,9 @@ void psssc2_ (double *xmin, double *xmax, double *ymin, double *ymax) {
 	float plotAspectRatio;	/* x axis/y axis */
 	
 	DEBUGPRINT(("In psssc2.  min=(%f, %f); max=(%f, %f).\n", *xmin, *ymin, *xmax, *ymax));
-	getOptionForKey("plot_aspect_ratio", plotAspectRatioString, 255);
+	if (!getOptionForKey("plot_aspect_ratio", plotAspectRatioString, 255)) {
+		plotAspectRatio = 1.0;
+	}
 	sscanf(plotAspectRatioString, "%f", &plotAspectRatio);
 	DEBUGPRINT(("In psssc2.  plotAspectRatioString=%s, and plotAspectRatio=%f.\n", plotAspectRatioString, plotAspectRatio));
 	

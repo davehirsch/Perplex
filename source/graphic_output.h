@@ -21,9 +21,9 @@ void psrpgn_ (double *x1, double *y1, double *rx, double *ry, int *npts, double 
 void setLineProperties (int dashtype, double width);
 void setFillType (int ifill);
 void compressSpaces(char *str);
-void getOptionForKey(char *keyword, char *value, int valueSize);
-void getCompleteOptionForKey(char *keyword, char *value, int valueSize);
-void get2OptionsForKey(char *keyword, char *value1, char *value2, int valueSize);
+char getOptionForKey(char *keyword, char *value, int valueSize);
+char getCompleteOptionForKey(char *keyword, char *value, int valueSize);
+char get2OptionsForKey(char *keyword, char *value1, char *value2, int valueSize);
 void pspygn_ (double *x, double *y, int *npts, double *rline, double *width, int *ifill);
 void pspyln_ (double *x, double *y, int *npts, double *rline, double *width, int *ifill);
 void psstrn_ (double *xs, double *ys, double *xt, double *yt, double *theta);
