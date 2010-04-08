@@ -22,6 +22,8 @@
 <$Feature "MainFiles" Title=^Main Program Files^ Description="The main program files, such as vertex.exe, which are the core of Perplex.">
 	<$Component "MainFiles" Create="Y" Directory_="INSTALLDIR">
 		<$FilesExclude ".\programs\MakePerplexFolder.vbs" EXLIST="NotThese">   ;;Don't include these!
+		<$FilesExclude ".\programs\Read Me.rtf" EXLIST="NotThese">   ;;Don't include these!
+		<$FilesExclude ".\programs\Getting Started.rtf" EXLIST="NotThese">   ;;Don't include these!
 		<$Files ".\programs\*" KeyFile="vertex.exe" EXLIST="NotThese">
 		<$Path   "[INSTALLDIR]">
 	<$/Component>
@@ -33,6 +35,8 @@
 
 		;--- Add the file (make the component's keypath) ------------------------
 		<$File RowKey="MWC.vbs" Source=".\programs\MakePerplexFolder.vbs" Comment='Simple tool to display environmental version information.' KeyPath="Y">
+		<$File RowKey="ReadMe.rtf" Source=".\programs\Read Me.rtf" Comment='Basic Perplex Information'>
+		<$File RowKey="Start.rtf" Source=".\programs\Getting Started.rtf" Comment='Basic Perplex Information'>
 
 		;--- Create the shortcut (non-advertised) --------------------------------
 	   #(
@@ -42,6 +46,20 @@
 					 Title="MWC_Pplx|Make Working Copy of Perplex Folder"
 			   Description="Makes a copy of the Perplex folder with commonly used programs and data files."
 					  Icon="@PerplexIcon"
+				   WorkDir="INSTALLDIR"
+		   >
+		   <$Shortcut
+					   Dir="MY_SHORTCUT_FOLDER"
+					Target="[!ReadMe.rtf]"
+					 Title="Read Me"
+			   Description="Basic Perplex Installation Information."
+				   WorkDir="INSTALLDIR"
+		   >
+		   <$Shortcut
+					   Dir="MY_SHORTCUT_FOLDER"
+					Target="[!Start.rtf]"
+					 Title="Getting Started with Perplex"
+			   Description="Basic Perplex Tutorial."
 				   WorkDir="INSTALLDIR"
 		   >
 	   #)
