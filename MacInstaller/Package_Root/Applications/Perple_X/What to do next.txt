@@ -1,0 +1,38 @@
+What to do next
+===============
+
+You have just made a new folder with copies of:
+- hp02ver.dat, a datafile of thermodynamic parameters based on Holland
+    and Powell's dataset.
+- newest_format_solut.dat, a datafile with all the current Perplex-enabled
+    solution models
+- perplex_options.dat, a text file with a set of program options for
+    Perplex, focused primarily on calculations
+- perplex_plot_options.dat, a text file with a set of program options for
+    Perplex, focused primarily of production of graphical documents
+- OpenTerminalWindowHere - a useful script (see below)
+- An alias to the Getting Started tutorial document
+- (this document)
+    
+You should now run the script called "Open Terminal Window Here".  This will
+    (strangely enough) open a new Terminal window, with the working directory
+    set to this directory.  Once there, you can run Perplex by typing:
+
+            build
+
+If you would like to remove this file from future Perplex folders, you can
+    just edit the applescript called MakePerplexFolder (drag it onto the
+    AppleScript Editor program, located in /Applications/Utilities).  The
+    applescript is likely located in /Applications/Perple_X.
+
+If you would like to use a different thermodynamic database or change
+    the solution models, you should:
+    - download new datafiles from the Perplex website and put them in the
+      datafiles folder within the PerpleX folder (whose default install
+      location is /Applications)
+    - edit the MakePerplexFolder applescript to copy different files to the
+      directory it creates
+
+If you are not sure what this whole Perplex thing is all about, try running
+    through the "Getting Started" tutorial.  There is a link to it in this
+    folder.
