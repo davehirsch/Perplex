@@ -43,6 +43,8 @@ COMPILE_OPTIONS = -v -O3 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-vers
 COMP77 = /sw/bin/gfortran 		# the name of the local fortran77-compatible compiler
 COMP77_PPC = /ppc/bin/gfortran
 
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/lib:/ppc/lib
+
 BASE_FORTRAN_FLAGS = -pedantic -Wunused 	#desired additional compile options for fortran
 FFLAGSPPC = $(BASE_FORTRAN_FLAGS) $(COMPILE_OPTIONS) $(COMPILE_OPTIONS_PPC) 
 FFLAGS32 = $(BASE_FORTRAN_FLAGS) $(COMPILE_OPTIONS) $(COMPILE_OPTIONS_32) 
@@ -245,7 +247,7 @@ pspts_new_ppc: pspts_new_ppc.o graphic_output_ppc.o tlib_ppc.o pscom_new_ppc.o
 psvdraw_new: psvdraw_new_32 psvdraw_new_64 psvdraw_new_ppc
 	$(FINISHLINKCAIRO)
 psvdraw_new_32: psvdraw_new_32.o graphic_output_32.o tlib_32.o pscom_new_32.o
-	$(COMP77) $(FFLAGS32) $(CAIRO_LIB_FLAGS) psvdraw_32.o graphic_output_32.o tlib_32.o pscom_new_32.o -o $@
+	$(COMP77) $(FFLAGS32) $(CAIRO_LIB_FLAGS) psvdraw_new_32.o graphic_output_32.o tlib_32.o pscom_new_32.o -o $@
 psvdraw_new_64: psvdraw_new_64.o graphic_output_64.o tlib_64.o pscom_new_64.o
 	$(COMP77) $(FFLAGS64) $(CAIRO_LIB_FLAGS) psvdraw_new_64.o graphic_output_64.o tlib_64.o pscom_new_64.o -o $@
 psvdraw_new_ppc: psvdraw_new_ppc.o graphic_output_ppc.o tlib_ppc.o pscom_new_ppc.o

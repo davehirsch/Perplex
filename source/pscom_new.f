@@ -839,7 +839,10 @@ c----------------------------------------------------------------------
       integer ier
       
       character*3 key*22, val, nval1*12, nval2*12,
-     *            nval3*12,opname*40, strg*40,strg1*40
+     *            nval3*12,opname*40, strg*40,strg1*40,
+     *            plottyp*10
+     
+      integer pgsize(2)
       
       character font*40
       common/ myfont /font
@@ -888,6 +891,15 @@ c                                 plot_aspect_ratio - (x_axis_length/y-axis_leng
 c                                 replicate_label - minimum separation before writing
 c                                 a replicate label
       rlabel = 0.025d0
+c                                 page_size - replacement for bbox in new system
+c                                 (actually defined and default value set in
+c                                 graphic_output.c; this is just for show)
+      pgsize(1) = 612
+      pgsize(2) = 792
+c                                 plottyp - plot type (PDF/PS/SVG)
+c                                 (actually defined and default value set in
+c                                 graphic_output.c; this is just for show)
+      plottyp = 'PDF'
 c                                 -------------------------------------
 c                                 look for file
       opname = 'perplex_plot_option.dat'
@@ -902,10 +914,20 @@ c                                 read cards to end of option file
 c                                 ier ne 0 bad record or eof
          if (ier.ne.0) exit 
 c                                 if here we have a keyword and value
-         if (key.eq.'font') then
-         
+
+         if (debug) PRINT *,'KEY=', key
+         if (debug) PRINT *,'   VALS=', val, nval1, nval2, nval3
+         if (debug) PRINT *,'   STRG=', strg, strg1
+
+         if (key.eq.'new_font') then
             font = strg 
 
+         else if (key.eq.'page_size') then
+            read (strg, *) pgsize
+
+         else if (key.eq.'plot_output_type') then
+            read (strg, *) plottyp
+            
          else if (key.eq.'axis_label_scale') then 
             read (strg,*) nscale
 
@@ -981,7 +1003,8 @@ c                                 --------------------------------------
 c                                 output 
       write (*,1000) 
 
-      write (*,1010) nscale, fill, label, ascale, font, grid, 
+      write (*,1010) nscale, plottyp, pgsize, fill, label, ascale, 
+     *               font, grid, 
      *               half, width, 
      *               xfac, rlabel, spline, tenth, 
      *               cscale
@@ -993,10 +1016,14 @@ c                                 -------------------------------------
      *      '    Keyword:               Value:     Permitted values ',
      *          '[default]:')
 1010  format (4x,'axis_label_scale       ',f4.2,7x,'[1.2] (rel)',/,
+     *        4x,'plot_output_type       ',a,'[PDF] PS SVG',/,
+     *        4x,'page_size :            ',/,
+     *        28x,i4,6x,'[612] x-length (pts)',/,
+     *        28x,i4,6x,'[792] y-length (pts)',/,
      *        4x,'field_fill             ',l1,10x,'[T] F',/,
      *        4x,'field_label            ',l1,10x,'[T] F',/,
      *        4x,'field_label_scale      ',f4.2,7x,'[0.72] (rel)',/,
-     *        4x,'font                   ',a,/,
+     *        4x,'new_font               ',a,/,
      *        4x,'grid                   ',l1,10x,'[F] T',/,
      *        4x,'half_ticks             ',l1,10x,'[T] F',/,
      *        4x,'line_width             ',f4.2,7x,'0-99 [1.] (pts)',/,
