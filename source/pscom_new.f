@@ -916,14 +916,19 @@ c                                 ier ne 0 bad record or eof
 c                                 if here we have a keyword and value
 
          if (debug) PRINT *,'KEY=', key
-         if (debug) PRINT *,'   VALS=', val, nval1, nval2, nval3
-         if (debug) PRINT *,'   STRG=', strg, strg1
+         if (debug) PRINT *,'   VAL=', val
+         if (debug) PRINT *,'   NVAL1=',nval1
+         if (debug) PRINT *,'   NVAL2=',nval2
+         if (debug) PRINT *,'   NVAL3=',nval3
+         if (debug) PRINT *,'   STRG=', strg
+         if (debug) PRINT *,'   STRG1=',strg1
 
          if (key.eq.'new_font') then
             font = strg 
 
          else if (key.eq.'page_size') then
-            read (strg, *) pgsize
+            read(val, *) pgsize(1)
+            read(nval1,*) pgsize(2)
 
          else if (key.eq.'plot_output_type') then
             read (strg, *) plottyp
