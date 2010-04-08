@@ -6,7 +6,7 @@ Option Explicit
 Dim OpenAfterMaking, RunBuildAfterMaking
 
 OpenAfterMaking = True
-RunBuildAfterMaking = True
+RunBuildAfterMaking = False
 
 Dim DestinationFolder
 DestinationFolder = BrowseFolder( "", False )
@@ -15,10 +15,8 @@ Dim Fso, MyFolder
 Set Fso = CreateObject("Scripting.FileSystemObject")
 MyFolder = fso.GetParentFolderName(wscript.ScriptFullName)
 
-'Call CopyIfNeeded("build.exe", MyFolder, DestinationFolder)
-'Call CopyIfNeeded("vertex.exe", MyFolder, DestinationFolder)
-'Call CopyIfNeeded("psvdraw.exe", MyFolder, DestinationFolder)
-'Call CopyIfNeeded("pssect.exe", MyFolder, DestinationFolder)
+Call CopyIfNeeded("OpenCommandWindowHere.vbs", MyFolder, DestinationFolder)
+Call CopyIfNeeded("What to do next.txt", MyFolder, DestinationFolder)
 Call CopyIfNeeded("perplex_option.dat", MyFolder, DestinationFolder)
 Call CopyIfNeeded("perplex_plot_option.dat", MyFolder, DestinationFolder)
 Call CopyIfNeeded("hp02ver.dat", MyFolder+"\datafiles", DestinationFolder)

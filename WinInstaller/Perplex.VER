@@ -16,6 +16,12 @@
 ; MsiName     = Perple_X
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+;############################################################################
+VERSION : 6.2.0
+DATE    : 7 Apr 2010
+CHANGES : Small changes to installation system; more helpful options in Program menu; includes tutorial.
+
 ;############################################################################
 VERSION : 6.1.0
 DATE    : 6 Apr 2010
