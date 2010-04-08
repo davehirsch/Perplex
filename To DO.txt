@@ -1,9 +1,6 @@
 To DO:
 
-Need to make sources display correct plot options (new names) (for 6.3)
-Update git for Windows Installer changes; tag as 6.2
-Adopt Windows changes to Mac side
+Update git for Windows Installer changes; tag as 6.3
 
-Post 410 schedule to website
 
 Fix zeb page bug
