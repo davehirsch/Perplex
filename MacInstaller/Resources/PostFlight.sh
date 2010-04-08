@@ -32,4 +32,4 @@ then
 fi
 
 open -R "$2/MakePerplexFolder.app"
-open "$2/MakePerplexFolder.app"
+open "$2/Read Me.rtf"
