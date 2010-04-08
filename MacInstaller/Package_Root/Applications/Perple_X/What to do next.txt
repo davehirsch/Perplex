@@ -27,11 +27,11 @@ If you would like to remove this file from future Perplex folders, you can
 
 If you would like to use a different thermodynamic database or change
     the solution models, you should:
-    - download new datafiles from the Perplex website and put them in the
-      datafiles folder within the PerpleX folder (whose default install
-      location is /Applications)
-    - edit the MakePerplexFolder applescript to copy different files to the
-      directory it creates
+    1) Download new datafiles from the Perplex website and put them in the
+       datafiles folder within the PerpleX folder (whose default install
+       location is /Applications)
+    2) Edit the MakePerplexFolder applescript to copy different files to the
+       directory it creates
 
 If you are not sure what this whole Perplex thing is all about, try running
     through the "Getting Started" tutorial.  There is a link to it in this
