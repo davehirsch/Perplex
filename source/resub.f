@@ -3101,10 +3101,18 @@ c-----------------------------------------------------------------------
       integer io3,io4,io9
       common / cst41 /io3,io4,io9
 
+      logical  debug
+      common / debugblk / debug
+
       save first, blank
 
       data first,blank/.true.,' '/
 c----------------------------------------------------------------------
+      if (debug) PRINT *,'IN FTOPEN. n2name=', n2name
+      if (debug) PRINT *,'IN FTOPEN. n3name=', n3name
+      if (debug) PRINT *,'IN FTOPEN. n4name=', n4name
+      if (debug) PRINT *,'IN FTOPEN. n9name=', n9name
+      
 c                             open thermodynamic data file
       open (n2, file = n2name, iostat = ierr, status = 'old')
       if (ierr.ne.0) call error (120,0d0,n2,n2name) 

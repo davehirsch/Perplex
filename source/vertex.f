@@ -62,6 +62,8 @@ c-----------------------------------------------------------------------
       include 'perplex_parameters.h'
 
       logical vertex, output, first,pots  
+      
+      integer ier99
 
       character n4name*100
 
@@ -84,9 +86,21 @@ c-----------------------------------------------------------------------
       integer jtest,jpot
       common/ debug /jtest,jpot
 
+      logical  debug
+      common / debugblk / debug
+
       save first,output,vertex,pots
       data vertex,output,first/.true.,.false.,.true./
 c----------------------------------------------------------------------- 
+c   Look for the "debug_yes" file to turn on debugging messages
+      open (99,iostat=ier99,file='debug_yes',status='old')
+      if (ier99.eq.0) then
+          debug=.TRUE.
+          close (99)
+      else
+          debug=.FALSE.
+      end if
+
 c                                 elastic modulii flag
       kmod = 0 
 c                                 this do loop is a cheap strategy to automate

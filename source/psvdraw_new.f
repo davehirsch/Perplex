@@ -33,6 +33,7 @@ c   Look for the "debug_yes" file to turn on debugging messages
       open (99,iostat=ier99,file='debug_yes',status='old')
       if (ier99.eq.0) then
           debug=.TRUE.
+          close (99)
       else
           debug=.FALSE.
       end if
