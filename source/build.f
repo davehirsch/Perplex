@@ -985,33 +985,25 @@ c                                 open c-space
 c                                  ================================
 c                                  print and plot file assignment 
 c                                  and options:
-      write (*,2000) 'print'
-      read (*,2100) y
+      write (*,2010) 'print'
+      read (*,3040) n3name
 
-      if (y.eq.'Y'.or.y.eq.'y') then
-
+      if (n3name.ne.blank) then
          io3 = 0
-
-         write (*,2010) 'print','pr'
-         read (*,3040) n3name
-         if (n3name.eq.blank) n3name = dpr 
-
-      end if 
+         write (*,2010) 'plot'
+         read (*,3040) n4name
+         if (n4name.ne.blank) io4 = 0
+      else
 c                                if the user doesn't want print
 c                                output, ask for plot file name
 c                                by default.
-      if (io3.eq.0) then  
-         write (*,2000) 'plot'
-         read (*,2100) y
-         if (y.eq.'Y'.or.y.eq.'y') io4 = 0
-      else
+         write (*,2011) 'plot','pl'
+         read (*,3040) n4name
+         if (n4name.eq.blank) n4name = dpl
          io4 = 0
       end if 
  
       if (io4.eq.0) then
-         write (*,2010) 'plot','pl'
-         read (*,3040) n4name
-         if (n4name.eq.blank) n4name = dpl
 c                                  warn about non-plottable results:
          if (icopt.eq.0.and.icp.ne.3) then
             call warn (37,r,i,'BUILD')
@@ -1486,7 +1478,9 @@ c                                 diagrams:
 1590  format (5x,'2 - Sections and Schreinemakers-type diagrams')
 2000  format (/,'Do you want a ',a,' file (Y/N)?')
 2010  format ('Enter the ',a,' file name, < 100 characters, left ',
-     *        'justified [default = ',a,']:')
+     *        'justified (blank for none):')
+2011  format ('Enter the ',a,' file name, < 100 characters, left ',
+     *        'justified [default = ',a,'] (blank for default):')
 2021  format ('Enter names, left justified, 1 per line,',
      *        ' and a blank to finish:')
 2030  format (/,'Calculations with a saturated phase',
