@@ -4,7 +4,7 @@ What to do next
 You have just made a new folder with copies of:
 - hp02ver.dat, a datafile of thermodynamic parameters based on Holland
     and Powell's dataset.
-- newest_format_solut.dat, a datafile with all the current Perplex-enabled
+- solution_models.dat, a datafile with all the current Perplex-enabled
     solution models
 - perplex_options.dat, a text file with a set of program options for
     Perplex, focused primarily on calculations

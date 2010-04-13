@@ -20,7 +20,7 @@ Call CopyIfNeeded("What to do next.txt", MyFolder, DestinationFolder)
 Call CopyIfNeeded("perplex_option.dat", MyFolder, DestinationFolder)
 Call CopyIfNeeded("perplex_plot_option.dat", MyFolder, DestinationFolder)
 Call CopyIfNeeded("hp02ver.dat", MyFolder+"\datafiles", DestinationFolder)
-Call CopyIfNeeded("newest_format_solut.dat", MyFolder+"\datafiles", DestinationFolder)
+Call CopyIfNeeded("solution_models.dat", MyFolder+"\datafiles", DestinationFolder)
 
 If OpenAfterMaking Then
 	Dim Shell

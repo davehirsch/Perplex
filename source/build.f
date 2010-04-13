@@ -157,7 +157,7 @@ c-----------------------------------------------------------------------
       data blank,fugact/' ','chem_pot','fugacity','activity'/
 
       data dpr,dpl,dsol/'pr            ','pl           ',
-     *                  'solut_09.dat     '/
+     *                  'solution_models.dat     '/
 c-----------------------------------------------------------------------
       write (*,7020)
 c                                     assign data files
@@ -1524,7 +1524,7 @@ c                                 diagrams:
 2520  format (6(2x,a))
 3000  format (a,1x,i1,1x,3(g12.6,1x),a,' amount')
 3010  format ('Enter solution model file name [default = ',
-     *        'solut_09.dat]',/,'left justified, ',
+     *        'solution_models.dat]',/,'left justified, ',
      *        '< 100 characters: ')
 3020  format (/,'**error ver191** FOPEN cannot find file:',/,a,/)
 3040  format (a,10x,a)
