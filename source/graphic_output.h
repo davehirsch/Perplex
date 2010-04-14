@@ -14,6 +14,7 @@
 char *trim( register char *p);
 void psopen_(char *fname, int fnamelen);
 void psclos_();
+void closeSurface();
 void pselip_ (double *xor, double *yor, double *dx, double *dy, double *rline, double *width, int *ifill);
 void pssctr_ (int *kfont, double *xs, double *ys, double *theta);
 void psbspl_ (double *x, double *y, int *npts, double *rline, double *width, int *ifill);
@@ -48,3 +49,5 @@ double deviceY (double inY);
 double deviceW (double inWidth);
 double deviceH (double inHeight);
 void completeRelativeOperation ();
+
+enum OUTPUTTYPE {PDFTYPE, PSTYPE, SVGTYPE };

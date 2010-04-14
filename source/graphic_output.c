@@ -66,6 +66,8 @@ double dmh_inRelProcess = 0;	/* boolean describing whether we have begun a set o
 int dmh_pageWidth;
 int dmh_pageHeight;
 char *dmh_fontFace;
+char *dmh_fileNameRoot;
+int dmh_outputFileType;
 
 /*==================================================================================
 	MACROS
@@ -87,6 +89,8 @@ char *dmh_fontFace;
 #endif
 #define MINCIRCLESIZE 2
 #define REFERENCE_TO_TRACKED_MIN_X 32700
+#define MAXPLOTSPERPAGE 6
+#define MULTIPLOTGUTTER 24
 
 /*==================================================================================
 	psopen - opens a document for writing
@@ -113,6 +117,8 @@ void psopen_(char *fname, int fnamelen) {
 	outFileName = malloc((strlen(fname) + 50) * sizeof(char));
 	strcpy(outFileName, fname);
 	DEBUGPRINT(("Found file name:%s of length: %lu\n", fname, strlen(fname)));
+	dmh_fileNameRoot = malloc(255*sizeof(char));
+	strcpy(dmh_fileNameRoot, fname);
 	
 	/* Look for plot options file to specify what sort of output we want: SVG/PS/PDF
 	 Could use the Perplex routine to do this, but calling into C from
@@ -120,7 +126,6 @@ void psopen_(char *fname, int fnamelen) {
 	
 	/* Default Values - If these get changed, then need to change the display in
 		pscom_new.f as well */
-	
 	if (!getOptionForKey("plot_output_type", outputType, 255)) {
 		strcpy(outputType, "PDF");
 	}
@@ -142,14 +147,17 @@ void psopen_(char *fname, int fnamelen) {
 	
 	
 	if (!strcmp(outputType, "SVG") || !strcmp(outputType, "svg")) {
+		dmh_outputFileType = SVGTYPE;
 		strcat(outFileName, ".svg");
 		dmh_surf = cairo_svg_surface_create (outFileName, dmh_pageWidth, dmh_pageHeight);
 	} else if (!strcmp(outputType, "PS") || !strcmp(outputType, "ps")) {
+		dmh_outputFileType = PSTYPE;
 		strcat(outFileName, ".ps");
 		dmh_surf = cairo_ps_surface_create (outFileName, dmh_pageWidth, dmh_pageHeight);
 		cairo_ps_surface_set_eps (dmh_surf, 1);
 	} else {
 		/* PDF is the default if nothing is specified in the plot options file */
+		dmh_outputFileType = PDFTYPE;
 		strcat(outFileName, ".pdf");
 		dmh_surf = cairo_pdf_surface_create (outFileName, dmh_pageWidth, dmh_pageHeight);
 	}
@@ -191,13 +199,22 @@ void psclos_() {
 	DEBUGPRINT(("Status:%s\n",cairo_status_to_string(cairo_status(dmh_cr))));
 */
 	
+	closeSurface();
 	
+	free(dmh_fontFace);
+	free(dmh_fileNameRoot);
+}
+
+
+/*==================================================================================
+ closeSurface - cleans up and finalizes the Cairo surface.  Called from psclos or
+ pspltrgn.
+ ==================================================================================*/
+void closeSurface() {
 	cairo_surface_flush(dmh_surf);
 	cairo_surface_finish(dmh_surf);
 	cairo_destroy (dmh_cr);
 	cairo_surface_destroy (dmh_surf);
-	
-	free(dmh_fontFace);
 }
 
 /*==================================================================================
@@ -695,46 +712,13 @@ void setFillType (int ifill) {
 
 
 /*==================================================================================
- pspygr - 
- ==================================================================================
-void pspygr (x,y,npts,rline,width,rfill) {
- 
-// pspygr - subroutine to generate closed polygons, abs. coordinates.
-// pspygr - with gray scale fill.
-
-      implicit none
-
-      integer npts
- 
-      double precision x(npts),y(npts),rline,width,rfill
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      write (nps,1030)
- 
-      call setLineProperties ((int) rline,width)
- cairo_set_source_rgb (dmh_cr, 0, 0, 0);	// black
-
-      call psrfil (rfill)
-      call psotrn
-      call psopts (x,y,npts)
- 
-      write (nps,1020) npts
- 
-1020  format (i5,' Poly',/,'End',/)
-1030  format (/,'Begin %I Poly')
-      end
-//----------------------------------------------------------------
-/*==================================================================================
  pspygn - subroutine to generate closed polygons, abs. coordinates
  ==================================================================================*/
 void pspygn_ (double *x, double *y, int *npts, double *rline, double *width, int *ifill) {
 
 	int i;
 	
-	DEBUGPRINT(("In pspygn\n"));
+	DEBUGPRINT(("In pspygn.  Received %i points.  First=(%f, %f); Dev=(%f,%f). rline=%f, width=%f, fill=%i\n", *npts, x[0], y[0], deviceX(x[0]), deviceY(y[0]), *rline, *width, *ifill));
 	completeRelativeOperation();
 	cairo_move_to(dmh_cr, deviceX(x[0]), deviceY(y[0]));
 	for (i = 1; i <= *npts-1; i++) {
@@ -788,13 +772,62 @@ void psstrn_ (double *xs, double *ys, double *xt, double *yt, double *theta) {
 /*==================================================================================
  pspltrgn - subroutine to set which small plot region to use
  	This routine is called by pschem in psvdraw_new in order to plot multiple
- 	ternary chemographies on a single page.  Each page can hold six.  Note that if
- 	the plot_aspect_ratio is set to be too tall, then these will clip off the top/
- 	bottom of the page.  If a seventh is requested, then a new document will be
- 	created with a name similar to that of the first, and the process will begin again.
+ 	ternary chemographies on a single page.  Each page can hold MAXPLOTSPERPAGE.  If
+ 	another is requested, then a new document will be created with a name similar to 
+ 	that of the first, and the process will begin again.
+ 	
+ 	This overrides any settings made in psssc2, and assumes that x and y (real-unit) 
+ 	bounds are 0.0-1.0.  Note that if this routine is called, then plot_aspect_ratio will be ignored.  
+ 	
+ 	Note that plotnum is a zero-based index
  ==================================================================================*/
 void pspltrgn_ (int *plotnum) {
-	DEBUGPRINT(("In pspltrgn. Plotnum = %i\n", *plotnum));
+	char *outFileName = malloc((strlen(dmh_fileNameRoot)+50) * sizeof(char));
+			
+	int plotPosition = *plotnum % MAXPLOTSPERPAGE;
+	int pageNum = *plotnum / MAXPLOTSPERPAGE;
+	int boxEdge, rowNum, colNum;
+	
+	DEBUGPRINT(("In pspltrgn. Plotnum = %i, plotPosition = %i, pageNum = %i\n", *plotnum, plotPosition, pageNum));
+	
+	if (plotPosition == 0 && pageNum > 0) {
+		/* we need to start a new page, so let's close the current one, and start a new one
+			with a related name */
+		DEBUGPRINT(("In pspltrgn. Closing current page and starting a new one with\n page number=%i and file type=%i\n", pageNum, dmh_outputFileType));
+		closeSurface();	// close existing surface
+		switch(dmh_outputFileType) {
+			case PDFTYPE:
+				sprintf(outFileName, "%s_%i.%s", dmh_fileNameRoot, pageNum, "pdf");
+				dmh_surf = cairo_pdf_surface_create (outFileName, dmh_pageWidth, dmh_pageHeight);
+				break;
+			case PSTYPE:
+				sprintf(outFileName, "%s_%i.%s", dmh_fileNameRoot, pageNum, "ps");
+				dmh_surf = cairo_ps_surface_create (outFileName, dmh_pageWidth, dmh_pageHeight);
+				cairo_ps_surface_set_eps (dmh_surf, 1);
+				break;
+			case SVGTYPE:
+				sprintf(outFileName, "%s_%i.%s", dmh_fileNameRoot, pageNum, "svg");
+				dmh_surf = cairo_svg_surface_create (outFileName, dmh_pageWidth, dmh_pageHeight);
+				break;
+		}
+		
+		dmh_cr = cairo_create (dmh_surf);
+		cairo_identity_matrix(dmh_cr);
+		cairo_set_line_join(dmh_cr, CAIRO_LINE_JOIN_ROUND);
+		
+		dmh_min_tracked_x = DBL_MAX;
+	}
+	
+	/* Set the location on the page for the small plot */
+	dmh_aspectRatio = 1.0;	/* Ignores plot_aspect_ratio.  */
+	boxEdge = (dmh_pageWidth - LEFTMARGIN - RIGHTMARGIN - MULTIPLOTGUTTER) / 2;
+	rowNum = plotPosition / 2;
+	colNum = plotPosition % 2;
+	dmh_xoffset = LEFTMARGIN + ((boxEdge + MULTIPLOTGUTTER) * colNum);
+	dmh_yoffset = (dmh_pageHeight * 0.5) + (boxEdge * 1.5) + MULTIPLOTGUTTER - (boxEdge * (rowNum+1)) - (MULTIPLOTGUTTER * rowNum); 
+	dmh_xscale = boxEdge;
+	dmh_yscale = boxEdge;
+	DEBUGPRINT(("End pspltrgn.  boxEdge=%i; r,c=(%i,%i); scale=(%f, %f); offset=(%f, %f); DevPtRange=(%f,%f)-(%f,%f).\n", boxEdge, rowNum, colNum, dmh_xscale, dmh_yscale, dmh_xoffset, dmh_yoffset,deviceX(0), deviceY(0), deviceX(1), deviceY(1)));
 }
 
 

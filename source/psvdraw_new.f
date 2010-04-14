@@ -368,9 +368,9 @@ c pschem - subroutine to output ternary chemographies.
  
       integer idss(10),iperm(2,3),i,j,iflag,isat,iop1,ivert,id,nchar
 
-      integer icp,istct,ipoint,ifyn,isyn,ipot,ias,jd
+      integer icp,istct,ipoint,ifyn,isyn,ipot,ias,jd,plotnum
 
-      logical vline, tlbl, plotnum
+      logical vline, tlbl
 
       integer  iop0 
       common / basic /iop0
@@ -443,8 +443,8 @@ c                                  convert to equilateral coordinates:
          x(1,i) = x(1,i) + 0.5d0 * x(2,i)
          x(2,i) = x(2,i) * 0.866025d0
       end do 
-c                                 initialize plotnum
-      plotnum = 0
+c                                 initialize plotnum; zero-based index
+      plotnum = -1
 c                                 default settings
 c                                 suppress tie lines
       iop1 = 0
@@ -547,7 +547,7 @@ c                                  last invariant
                      xx(j) = x(1,id) 
                      yy(j) = x(2,id) 
                   end do
-                  call pspygn (xx,yy,3,1d0,0d0,0)
+                  call pspygn (xx,yy,3,1d0,1d0,0)
                end if
             end do   
 

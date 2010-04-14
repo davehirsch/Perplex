@@ -1,6 +1,3 @@
 To DO:
 
-Update git for Windows Installer changes; tag as 6.3
-
-
-Fix zeb page bug
+Smooth pseudosection lines

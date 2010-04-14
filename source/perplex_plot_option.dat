@@ -5,7 +5,7 @@
         | For documentation refer to:
         |         www.perplex.ethz.ch/perplex_plot_options.html
 |----------------------------------------------------------------------
-axis_label_scale        1.2     | relative scale for axes labels and numbers
+axis_label_scale        1.1     | relative scale for axes labels and numbers
 
 bounding_box       0 0 800 800  | EPS bounding box, A4={0 0 595 842}, US letter={0 0 612 792}
                                 | small bounding boxes may cause clipping
