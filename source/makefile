@@ -69,8 +69,7 @@ LIBRARYINSTALLATIONTARGET=/usr/local/lib/perplex
 MYOBJ = actcor build cohsrk ctransf frendly hptover htog meemum pscontor pscontor_rel pspts psvdraw pssect pscontor_new pscontor_rel_new pspts_new psvdraw_new pssect_new pt2curv species vertex werami 
 
 all:  $(MYOBJ)
-	mkdir -p ./bin
-	mv $(MYOBJ) ./bin
+	mv $(MYOBJ) ../MacInstaller/Package_Root/Applications/Perple_X
 
 FORT_SOURCE = $(MYOBJ) tlib rlib flib clib dlib olib cont_lib nlib sclib vrlib resub
 

@@ -2,14 +2,21 @@
 
 # (Fails because the PATH in the installer-spawned process is not the PATH of the current user):
 # Log my operation:
- echo "$SCRIPT_NAME: Preparing to test .bash_profile for the existence of location:$2"
-
+echo "$SCRIPT_NAME: Preparing to test .bash_profile for the existence of location:$2"
+#echo "user= $USER"
+#echo "home= $HOME"
+#SETRESULT=`set`
+#echo $SCRIPT_NAME: Results from set=$SETRESULT
 
 # Create the .bash_profile file if necessary:
 if [ ! -e $HOME/.bash_profile ];
 then
 	touch $HOME/.bash_profile
+	chown $USER $HOME/.bash_profile
 fi
+
+#LSRES=`ls -aFlq $HOME/.bash_pr*`
+#echo $SCRIPT_NAME: Results from ls=$LSRES
 
 # If the PATH doesn't currently contain the installed Perple_X files, then add that to the PATH
 if ! grep -q "$2" $HOME/.bash_profile ;
