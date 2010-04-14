@@ -27,6 +27,7 @@ char get2OptionsForKey(char *keyword, char *value1, char *value2, int valueSize)
 void pspygn_ (double *x, double *y, int *npts, double *rline, double *width, int *ifill);
 void pspyln_ (double *x, double *y, int *npts, double *rline, double *width, int *ifill);
 void psstrn_ (double *xs, double *ys, double *xt, double *yt, double *theta);
+void pspltrgn_ (int *plotnum);
 void psssc2_ (double *xmin, double *xmax, double *ymin, double *ymax);
 void psrect_ (double *x1, double *x2, double *y1, double *y2, double *rline, double *width, int *ifill);
 void psrecr_ (double *x1, double *x2, double *y1, double *y2, double *rline, double *width, double *rfill);

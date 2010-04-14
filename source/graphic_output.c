@@ -776,104 +776,28 @@ void pspyln_ (double *x, double *y, int *npts, double *rline, double *width, int
 	setFillType (*ifill);
 	cairo_fill(dmh_cr);
 }
-/*==================================================================================
- pscspl - 
- ==================================================================================
-void pscspl (x,y,npts,rline,width,ifill) {
- 
-// pscspl - subroutine to generate closed bsplines.
 
- completeRelativeOperation();
-      implicit none
-
-      integer npts,ifill
- 
-      double precision x(npts),y(npts),width,rline
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      write (nps,1030)
- 
-      call setLineProperties (rline,width)
-      cairo_set_source_rgb (dmh_cr, 0, 0, 0);	// black
-      call setFillType (ifill)
-      call psotrn
-      call psopts (x,y,npts)
- 
-      write (nps,1020) npts
- 
-1020  format (i5,' CBSpl',/,'End',/)
-1030  format (/,'Begin %I CBSpl')
-      end
-//----------------------------------------------------------------
-/*==================================================================================
- psopts - 
- ==================================================================================
-void psopts (x,y,npts) {
- 
-// psopts - subroutine to output points.
-
-      implicit none
-
-      integer npts,i
- 
-      double precision x(npts),y(npts)
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      write (nps,*) '%I ',npts
-      write (nps,1010) ( int((x(i) - xmn) * xscale),
-     *                   int((y(i) - ymn) * yscale),
-     *                   i = 1, npts)
- 
-1010  format (10(i7,1x))
- 
-      end
-//----------------------------------------------------------------
-/*==================================================================================
- psscpt - subroutine to scale and fix real coordinates
- ==================================================================================
-void psscpt (double x,double y,
-			 int *ix, int *iy, 
-			 double xmn, double ymn, 
-			 double xscale, double yscale) {
- 
-	ix = int((x - xmn) * xscale)
-	iy = int((y - ymn) * yscale)
-}
-//----------------------------------------------------------------
 /*==================================================================================
  psstrn - subroutine to set transformation matrix
+ 	Obsolete, but easier to make it a stub than to remove it altogether.
  ==================================================================================*/
 void psstrn_ (double *xs, double *ys, double *xt, double *yt, double *theta) {
 	DEBUGPRINT(("In psstrn\n"));
 }
+
 /*==================================================================================
- psssc1 - 
- ==================================================================================
-void psssc1 (ymin,ymax,xmin) {
- 
-// psssc1 - subroutine to set scaling by y axis length
+ pspltrgn - subroutine to set which small plot region to use
+ 	This routine is called by pschem in psvdraw_new in order to plot multiple
+ 	ternary chemographies on a single page.  Each page can hold six.  Note that if
+ 	the plot_aspect_ratio is set to be too tall, then these will clip off the top/
+ 	bottom of the page.  If a seventh is requested, then a new document will be
+ 	created with a name similar to that of the first, and the process will begin again.
+ ==================================================================================*/
+void pspltrgn_ (int *plotnum) {
+	DEBUGPRINT(("In pspltrgn. Plotnum = %i\n", *plotnum));
+}
 
-      implicit none
 
-      double precision ymin,ymax,xmin
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      ymn = ymin
-      xmn = xmin
-      yscale = 3d3/(ymax-ymin)
-      xscale = yscale
- 
-      end
- 
 /*==================================================================================
  psssc2 - subroutine to set scaling of axes (independently)
 	This routine is called once per drawing session to tell the graphic system
@@ -915,106 +839,6 @@ void psssc2_ (double *xmin, double *xmax, double *ymin, double *ymax) {
 	dmh_yoffset = deviceOriginY - scaledYmin;
 	DEBUGPRINT(("End psssc2.  scale=(%f, %f); offset=(%f, %f).\n", dmh_xscale, dmh_yscale, dmh_xoffset, dmh_yoffset));
 }
-/*==================================================================================
- pssscm - 
- ==================================================================================
-void pssscm (xfac, yfac) {
- 
-// pssscm - subroutine to modify scaling
-
-      implicit none
-
-      double precision xfac,yfac
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      yscale = yscale * yfac
-      xscale = xscale * xfac
- 
-      end
-//----------------------------------------------------------------
-      subroutine psotrn
- 
-// psotrn - subroutine to output transformation matrix.
-
-      implicit none
-
-      double precision a,b,c,d,xt,yt
-      common/ trans /a,b,c,d,xt,yt
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      write (nps,1000) a,b,c,d,xt,yt
- 
-1000  format ('%I t',/,'[',6(g9.3,1x),'] concat')
- 
-      end
-//----------------------------------------------------------------
-      subroutine psoclr
- 
-// psoclr - subroutine to output color choice.
- 
-      implicit none
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
- 
-      write (nps,1000)
- 
-1000  format ('%I cfg Black',/,'0 0 0 SetCFg',/,'%I cbg White',/,
-     *        '1 1 1 SetCBg')
- 
-      end
-
-/*==================================================================================
- psrfil - 
- ==================================================================================
-void psrfil (rfill) {
- 
-// psrfil - subroutine to output gray scale fill 
-
-      implicit none
-
-      double precision rfill
-
-      integer nps
-      double precision xscale,yscale,xmn,ymn
-      common/ scales /xscale,yscale,xmn,ymn,nps
-
-      write (nps,1010) rfill
- 
-1010  format ('%I p',/,f6.4,' SetP')
- 
-      end
-
-
-//----------------------------------------------------------------
-/*==================================================================================
- pschct - 
- ==================================================================================
-void pschct (nchar,ict,record) {
- 
-// pschct - subroutine to count to first non-blank character.
-
-      implicit none
-
-      integer nchar,ict,i
- 
-      character*1 record(*)
- 
-      nchar = 1
- 
-      do i = 2, ict
-         if ((record(i-1).eq.' ').and.(record(i).eq.' ')) exit
-         nchar = nchar + 1
-      end do 
- 
-      end
 /*==================================================================================
  psrect - subroutine to output a rectangle, with integer fill code
  ==================================================================================*/

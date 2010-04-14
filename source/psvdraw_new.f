@@ -370,7 +370,7 @@ c pschem - subroutine to output ternary chemographies.
 
       integer icp,istct,ipoint,ifyn,isyn,ipot,ias,jd
 
-      logical vline, tlbl
+      logical vline, tlbl, plotnum
 
       integer  iop0 
       common / basic /iop0
@@ -443,6 +443,8 @@ c                                  convert to equilateral coordinates:
          x(1,i) = x(1,i) + 0.5d0 * x(2,i)
          x(2,i) = x(2,i) * 0.866025d0
       end do 
+c                                 initialize plotnum
+      plotnum = 0
 c                                 default settings
 c                                 suppress tie lines
       iop1 = 0
@@ -513,8 +515,12 @@ c                                  read saturated phase id's
          end if
  
          call psssc2 (0d0,1d0,0d0,1d0)
+         
+         plotnum = plotnum + 1
+         
+         call pspltrgn (plotnum)
  
-         call psstrn (8d-2,8d-2,xt,yt,0d0)
+c         call psstrn (8d-2,8d-2,xt,yt,0d0)
 
          if (iop1.eq.0) then 
 c                                  don't draw tielines
