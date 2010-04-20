@@ -1,3 +1,5 @@
 To DO:
 
 Smooth pseudosection lines
+
+Open Terminal Window Here cannot handle spaces in paths - fix
