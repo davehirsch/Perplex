@@ -582,7 +582,8 @@ c                                       sectioning constraints
             write (record,1000) vnm(i),vmn(i)
             nchar = 20
             call psublk (record,nchar)
-            call pstext (xmax,y,record,nchar,1000+btAlgn,rtAlgn)
+            call pstext (xmax,y,record,nchar,
+     *                    (1000*(i-3))+btAlgn,rtAlgn)
             y = y - 2.4*dcy*nscale
          end do 
  
